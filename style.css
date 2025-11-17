@@ -1,100 +1,28 @@
-/* Gaya ringkas, meniru tampilan lebih sederhana (UI lama) */
-
-:root{
-  --bg: #f3f4f6;
-  --card: #ffffff;
-  --muted: #6b7280;
-  --primary: #059669;
-  --secondary: #f59e0b;
-  --danger: #ef4444;
-  --success: #22c55e;
+body {
+    background: #f1f5f9;
 }
-
-html,body{
-  height:100%;
-  margin:0;
-  font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
-  background: var(--bg);
-  color: #111827;
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.45);
+    display: none;
 }
-
-/* Page visibility */
-.page { display: none; }
-.page.active { display: block; }
-
-/* Simple card used across app */
-.card{
-  background: var(--card);
-  padding: 12px;
-  border-radius: 6px;
-  border: 1px solid #e6e6e6;
+.modal-overlay.active {
+    display: block;
 }
-
-/* Buttons */
-.btn-primary{
-  background: var(--primary);
-  color: white;
-  padding: 8px 10px;
-  border-radius: 6px;
-  border: none;
+#toast {
+    position: fixed;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #1e40af;
+    color: white;
+    padding: 12px 18px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    opacity: 0;
+    transition: 0.3s;
 }
-.btn-simple{
-  background: white;
-  padding: 10px;
-  border-radius: 6px;
-  border: 1px solid #e6e6e6;
+#toast.show {
+    opacity: 1;
 }
-
-/* Modal bottom sheet basic */
-.modal-overlay{
-  display:none;
-  position:fixed;
-  left:0; right:0; top:0; bottom:0;
-  background: rgba(0,0,0,0.35);
-  z-index:50;
-  align-items:flex-end;
-  justify-content:center;
-}
-.modal-overlay.active { display:flex; }
-.modal-content{
-  width:100%;
-  max-width:520px;
-  background: #fff;
-  border-radius:10px 10px 0 0;
-  padding:16px;
-  box-shadow: 0 -6px 20px rgba(0,0,0,0.08);
-}
-
-/* Floating add button */
-.fixed { position:fixed; }
-
-/* Toast */
-.toast{
-  position: fixed;
-  left: 50%;
-  transform: translateX(-50%);
-  bottom: 28px;
-  padding: 10px 16px;
-  border-radius: 8px;
-  background: #333;
-  color: white;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity .2s ease, transform .2s ease;
-  z-index: 60;
-}
-.toast.show{
-  opacity: 1;
-  pointer-events: auto;
-  transform: translateX(-50%) translateY(-6px);
-}
-
-/* Small helpers */
-.text-danger{ color: var(--danger); }
-.text-success{ color: var(--success); }
-.text-muted{ color: #6b7280; font-size: .9rem; }
-
-/* Make modal and page behave nicely on small screens */
-@media (max-width:640px){
-  .modal-content { border-radius:12px 12px 0 0; }
-  }
