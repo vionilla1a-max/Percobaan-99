@@ -3,38 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>FokusMasaDepan</title>
-
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
-    <link rel="stylesheet" href="style.css" />
-
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    fontFamily: { inter: ["Inter", "sans-serif"] },
-                    colors: {
-                        primary: { DEFAULT: "#059669", light: "#10b981", dark: "#047857" },
-                        accent: "#34d399",
-                        soft: "#f0fdf4"
-                    },
-                    backdropBlur: {
-                        xs: '2px',
-                    }
-                }
-            }
-        }
-    </script>
-</head>
-<body class="font-inter bg-gradient-to-br from-white to-green-50"> (Updated Professional Theme) ===== -->
-<!DOCTYPE html>
-<html lang="id" class="bg-gray-100">
-<head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>FokusMasaDepan</title>
+    <title>FokusMasaDepan - Kelola Keuangan dengan Bijak</title>
 
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -57,26 +26,32 @@
     </script>
 </head>
 <body class="font-inter">
-    <div id="app-container" class="max-w-md mx-auto bg-white min-h-screen shadow-xl rounded-xl overflow-hidden border border-gray-200">
+    <div id="app-container" class="max-w-md mx-auto bg-white min-h-screen shadow-xl overflow-hidden border border-gray-200">
 
-        <header class="p-4 flex justify-between items-center bg-white shadow-md sticky top-0 z-10">
+        <!-- Header -->
+        <header class="p-4 flex justify-between items-center bg-white shadow-md sticky top-0 z-50">
             <h1 class="text-xl font-bold text-primary">FokusMasaDepan</h1>
             <button onclick="showModal('modal-edit-settings')" class="text-gray-600 hover:text-primary transition-colors">
                 <i class="fas fa-gear text-xl"></i>
             </button>
         </header>
 
+        <!-- Page Beranda -->
         <div id="page-beranda" class="page active pb-24">
-            <section class="p-5 bg-primary text-white rounded-b-3xl shadow-lg">
-                <p class="text-sm opacity-80">Saldo Saat Ini</p>
-                <p id="current-saldo" class="text-5xl font-bold">0</p>
+            <section class="p-5 bg-gradient-to-br from-primary to-primary-dark text-white rounded-b-3xl shadow-lg">
+                <p class="text-sm opacity-90 mb-1">Saldo Saat Ini</p>
+                <p id="current-saldo" class="text-5xl font-bold mb-2">Rp 0</p>
+                <p class="text-xs opacity-75" id="last-update">Terakhir diperbarui: -</p>
             </section>
 
             <section class="p-4 -mt-4">
-                <div class="bg-soft p-4 rounded-xl shadow-inner border border-gray-200">
+                <div class="bg-soft p-4 rounded-xl shadow-md border border-gray-200">
                     <div class="flex justify-between items-center mb-2">
-                        <p class="font-semibold text-gray-700">Limit Bulanan (Rp<span id="limit-amount-display">0</span>)</p>
+                        <p class="font-semibold text-gray-700">Limit Bulanan (Rp <span id="limit-amount-display">0</span>)</p>
                         <span id="limit-bulanan-status" class="font-bold text-primary">Aman</span>
+                    </div>
+                    <div class="w-full bg-gray-300 rounded-full h-2 mb-2">
+                        <div id="limit-progress-bar" class="bg-primary h-2 rounded-full transition-all" style="width: 0%"></div>
                     </div>
                     <p id="motivasi-text" class="text-sm italic text-gray-600">Atur Limit Bulanan Anda di Pengaturan!</p>
                 </div>
@@ -86,7 +61,7 @@
                 <div class="flex justify-between items-center mb-3">
                     <h2 class="text-lg font-bold text-gray-800">Ringkasan <span id="summary-period">Bulan Ini</span></h2>
 
-                    <select id="filter-select" class="p-2 border rounded-lg text-sm bg-white shadow-sm">
+                    <select id="filter-select" onchange="applyFilter()" class="p-2 border rounded-lg text-sm bg-white shadow-sm focus:ring-2 focus:ring-primary">
                         <option value="today">Hari Ini</option>
                         <option value="week">Minggu Ini</option>
                         <option value="month" selected>Bulan Ini</option>
@@ -98,36 +73,223 @@
                 <div class="grid grid-cols-2 gap-3 bg-soft p-4 rounded-xl border border-gray-200 shadow-sm">
                     <div class="text-center">
                         <p class="text-sm text-gray-500">Pemasukan</p>
-                        <p id="summary-income" class="text-xl font-bold text-accent">0</p>
+                        <p id="summary-income" class="text-xl font-bold text-accent">Rp 0</p>
                     </div>
                     <div class="text-center">
                         <p class="text-sm text-gray-500">Pengeluaran</p>
-                        <p id="summary-expense" class="text-xl font-bold text-red-500">0</p>
+                        <p id="summary-expense" class="text-xl font-bold text-red-500">Rp 0</p>
                     </div>
                 </div>
             </section>
 
             <section class="p-4 pt-0">
                 <h2 class="text-lg font-bold text-gray-800 mb-3">Riwayat Transaksi</h2>
-                <ul id="transaction-list" class="divide-y divide-gray-200"></ul>
+                <ul id="transaction-list" class="divide-y divide-gray-200 bg-white rounded-xl border border-gray-200 overflow-hidden"></ul>
+                <p id="no-transactions" class="text-center text-gray-400 py-8 hidden">Belum ada transaksi</p>
             </section>
 
-            <button onclick="showModal('modal-tambah-transaksi')" class="fixed bottom-24 right-6 bg-accent text-white p-4 rounded-full shadow-xl hover:scale-110 transition-transform">
+            <button onclick="showModal('modal-tambah-transaksi')" class="fixed bottom-24 right-6 bg-accent text-white p-4 rounded-full shadow-2xl hover:scale-110 transition-transform z-40">
                 <i class="fas fa-plus text-xl"></i>
             </button>
         </div>
 
-        <div id="page-impian" class="page pb-24"></div>
-        <div id="page-analisis" class="page pb-24"></div>
+        <!-- Page Impian -->
+        <div id="page-impian" class="page pb-24 p-4">
+            <div class="mb-4">
+                <h2 class="text-2xl font-bold text-gray-800 mb-2">Impian Saya</h2>
+                <p class="text-gray-600 text-sm">Wujudkan impian Anda dengan menabung!</p>
+            </div>
 
-        <div id="modal-tambah-transaksi" class="modal-overlay"></div>
-        <div id="modal-edit-dream" class="modal-overlay"></div>
-        <div id="modal-edit-settings" class="modal-overlay"></div>
-        <div id="modal-confirm-reset" class="modal-overlay"></div>
+            <div id="dream-list" class="space-y-4"></div>
+            <p id="no-dreams" class="text-center text-gray-400 py-12 hidden">Belum ada impian. Tambahkan impian Anda!</p>
 
+            <button onclick="showModal('modal-edit-dream')" class="fixed bottom-24 right-6 bg-accent text-white p-4 rounded-full shadow-2xl hover:scale-110 transition-transform z-40">
+                <i class="fas fa-plus text-xl"></i>
+            </button>
+        </div>
+
+        <!-- Page Analisis -->
+        <div id="page-analisis" class="page pb-24 p-4">
+            <div class="mb-4">
+                <h2 class="text-2xl font-bold text-gray-800 mb-2">Analisis Keuangan</h2>
+                <p class="text-gray-600 text-sm">Lihat pola pengeluaran Anda</p>
+            </div>
+
+            <div class="bg-white p-4 rounded-xl shadow-md border border-gray-200 mb-4">
+                <h3 class="font-bold text-gray-700 mb-3">Pengeluaran per Kategori</h3>
+                <canvas id="chart-kategori" class="max-h-64"></canvas>
+            </div>
+
+            <div class="bg-white p-4 rounded-xl shadow-md border border-gray-200 mb-4">
+                <h3 class="font-bold text-gray-700 mb-3">Trend Bulanan</h3>
+                <canvas id="chart-trend" class="max-h-64"></canvas>
+            </div>
+
+            <div id="category-breakdown" class="space-y-2"></div>
+        </div>
+
+        <!-- Modal Tambah Transaksi -->
+        <div id="modal-tambah-transaksi" class="modal-overlay">
+            <div class="modal-content">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-xl font-bold text-gray-800">Tambah Transaksi</h3>
+                    <button onclick="closeModal('modal-tambah-transaksi')" class="text-gray-500 hover:text-gray-700">
+                        <i class="fas fa-times text-xl"></i>
+                    </button>
+                </div>
+
+                <form onsubmit="addTransaction(event)">
+                    <div class="mb-4">
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">Jenis Transaksi</label>
+                        <div class="flex gap-2">
+                            <button type="button" onclick="selectTransactionType('income')" id="btn-income" class="flex-1 p-3 border-2 rounded-lg transition-all">
+                                <i class="fas fa-arrow-down text-accent"></i> Pemasukan
+                            </button>
+                            <button type="button" onclick="selectTransactionType('expense')" id="btn-expense" class="flex-1 p-3 border-2 rounded-lg transition-all">
+                                <i class="fas fa-arrow-up text-red-500"></i> Pengeluaran
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">Jumlah (Rp)</label>
+                        <input type="number" id="input-amount" required min="0" class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-primary" placeholder="0">
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">Kategori</label>
+                        <select id="input-category" required class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-primary">
+                            <option value="">Pilih Kategori</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">Keterangan</label>
+                        <input type="text" id="input-description" required class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-primary" placeholder="Contoh: Belanja bulanan">
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">Tanggal</label>
+                        <input type="date" id="input-date" required class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-primary">
+                    </div>
+
+                    <button type="submit" class="w-full bg-primary text-white p-3 rounded-lg font-semibold hover:bg-primary-dark transition-colors">
+                        Simpan Transaksi
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Modal Edit Dream -->
+        <div id="modal-edit-dream" class="modal-overlay">
+            <div class="modal-content">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-xl font-bold text-gray-800">Tambah Impian</h3>
+                    <button onclick="closeModal('modal-edit-dream')" class="text-gray-500 hover:text-gray-700">
+                        <i class="fas fa-times text-xl"></i>
+                    </button>
+                </div>
+
+                <form onsubmit="saveDream(event)">
+                    <div class="mb-4">
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">Nama Impian</label>
+                        <input type="text" id="dream-name" required class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-primary" placeholder="Contoh: iPhone Baru">
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">Target (Rp)</label>
+                        <input type="number" id="dream-target" required min="0" class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-primary" placeholder="0">
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">Tabungan Saat Ini (Rp)</label>
+                        <input type="number" id="dream-current" required min="0" class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-primary" placeholder="0">
+                    </div>
+
+                    <button type="submit" class="w-full bg-primary text-white p-3 rounded-lg font-semibold hover:bg-primary-dark transition-colors">
+                        Simpan Impian
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Modal Settings -->
+        <div id="modal-edit-settings" class="modal-overlay">
+            <div class="modal-content">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-xl font-bold text-gray-800">Pengaturan</h3>
+                    <button onclick="closeModal('modal-edit-settings')" class="text-gray-500 hover:text-gray-700">
+                        <i class="fas fa-times text-xl"></i>
+                    </button>
+                </div>
+
+                <form onsubmit="saveSettings(event)">
+                    <div class="mb-4">
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">Limit Bulanan (Rp)</label>
+                        <input type="number" id="settings-limit" min="0" class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-primary" placeholder="0">
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">Saldo Awal (Rp)</label>
+                        <input type="number" id="settings-saldo" min="0" class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-primary" placeholder="0">
+                    </div>
+
+                    <button type="submit" class="w-full bg-primary text-white p-3 rounded-lg font-semibold hover:bg-primary-dark transition-colors mb-3">
+                        Simpan Pengaturan
+                    </button>
+
+                    <button type="button" onclick="showModal('modal-confirm-reset')" class="w-full bg-red-500 text-white p-3 rounded-lg font-semibold hover:bg-red-600 transition-colors">
+                        Reset Semua Data
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Modal Confirm Reset -->
+        <div id="modal-confirm-reset" class="modal-overlay">
+            <div class="modal-content">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-xl font-bold text-red-600">Konfirmasi Reset</h3>
+                    <button onclick="closeModal('modal-confirm-reset')" class="text-gray-500 hover:text-gray-700">
+                        <i class="fas fa-times text-xl"></i>
+                    </button>
+                </div>
+
+                <p class="text-gray-700 mb-6">Apakah Anda yakin ingin menghapus semua data? Tindakan ini tidak dapat dibatalkan!</p>
+
+                <div class="flex gap-3">
+                    <button onclick="closeModal('modal-confirm-reset')" class="flex-1 bg-gray-300 text-gray-700 p-3 rounded-lg font-semibold hover:bg-gray-400 transition-colors">
+                        Batal
+                    </button>
+                    <button onclick="resetAllData()" class="flex-1 bg-red-500 text-white p-3 rounded-lg font-semibold hover:bg-red-600 transition-colors">
+                        Ya, Reset
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bottom Navigation -->
+        <nav class="fixed bottom-0 left-0 right-0 bg-white shadow-lg border-t border-gray-200 z-50">
+            <div class="max-w-md mx-auto flex justify-around">
+                <button onclick="switchPage('beranda')" id="nav-beranda" class="nav-btn active flex-1 p-4 text-center transition-colors">
+                    <i class="fas fa-home text-xl mb-1"></i>
+                    <p class="text-xs font-semibold">Beranda</p>
+                </button>
+                <button onclick="switchPage('impian')" id="nav-impian" class="nav-btn flex-1 p-4 text-center transition-colors">
+                    <i class="fas fa-star text-xl mb-1"></i>
+                    <p class="text-xs font-semibold">Impian</p>
+                </button>
+                <button onclick="switchPage('analisis')" id="nav-analisis" class="nav-btn flex-1 p-4 text-center transition-colors">
+                    <i class="fas fa-chart-pie text-xl mb-1"></i>
+                    <p class="text-xs font-semibold">Analisis</p>
+                </button>
+            </div>
+        </nav>
+
+        <!-- Toast Notification -->
         <div id="toast">Pesan notifikasi...</div>
     </div>
 
     <script src="script.js"></script>
 </body>
-            </html>
+    </html>
