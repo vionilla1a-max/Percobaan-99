@@ -1,3 +1,4 @@
+<style>
 body {
     background: #f1f5f9;
 }
@@ -26,3 +27,4 @@ body {
 #toast.show {
     opacity: 1;
 }
+</style>
